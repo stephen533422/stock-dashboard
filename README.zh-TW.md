@@ -16,21 +16,22 @@
 
 ## 專案簡介
 
-涵蓋約 113 檔、橫跨 10 個產業的美股儀表板,提供:具即時報價與 sparkline 的 KPI 卡片、
+涵蓋約 113 檔、橫跨 10 個產業的美股儀表板,提供:具即時報價與 sparkline 的卡片、
 前端即時搜尋、具持久化的觀察列表,以及支援時間區間切換的個股走勢圖詳情頁。
 行情即時取自 Yahoo Finance(經同源代理),於來源不可用時自動降級為穩定的模擬資料。
 
 ## 功能
 
-- **儀表板** — 響應式 KPI 網格、即時價格與漲跌幅、內嵌 sparkline、即時搜尋、觀察列表篩選。
+- **儀表板** — 響應式卡片網格、即時價格與漲跌幅、內嵌 sparkline、即時搜尋、觀察列表篩選。
 - **個股詳情** — 即時報價(開高低、昨收、52 週高低、成交量)、支援 `1W / 1M / 3M / 1Y` 切換的動畫面積圖。
 - **觀察列表** — 任意收藏,持久化至 `localStorage`,並於全站同步。
-- **主題** — 深 / 淺色,跟隨系統偏好、可持久化,且載入時無閃爍。
-- **多語系** — English / 繁體中文 / 简体中文,並以 `Intl` 提供在地化的數字與貨幣格式。
+- **主題** — 深 / 淺色,跟隨系統偏好、可持久化。
+- **多語系** — English / 繁體中文 / 简体中文,並以 `Intl` 做在地化的數字格式。
 
 ## 工程亮點
 
 - **以 Suspense 為核心的資料層**:資料載入採用 `useSuspenseQuery`,外層僅需單一 `Suspense` + `ErrorBoundary`,功能元件得以直接取用 `data`,避免 `isLoading` / `isError` 狀態判斷散落於各元件。
+- **以 TanStack Query 管理伺服器狀態**:單一 `QueryClient` 統一行為(失敗重試 1 次、停用 `refetchOnWindowFocus`);快取以 `staleTime` 分層——預設 60 秒、日線 K 線提高為 1 小時,並依查詢參數各自快取,避免重複請求。
 - **並行渲染的使用者體驗**:以 `useDeferredValue`(搜尋)與 `useTransition`(切換走勢圖區間)將高成本渲染降為低優先,確保輸入與導航全程維持流暢。
 - **大量項目的渲染效能**:113 張卡片透過 `React.memo`(過濾時略過未變動卡片)與 CSS `content-visibility`(略過畫面外的版面與繪製)維持流暢。
 - **具韌性的降級機制**:任一網路路徑失敗時,皆降級為穩定且 seeded 的模擬資料(以 FNV-1a 雜湊產生,確保重新整理後一致),於離線環境下仍完全可用。
@@ -46,19 +47,26 @@
 | `useTransition` | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 切換時間區間時保留既有走勢圖(不觸發 Suspense fallback),並呈現 pending 狀態。 |
 | `useSyncExternalStore` | [store/watchlistStore.ts](src/store/watchlistStore.ts) | 將 React 訂閱至 `localStorage` 外部 store;以單檔布林快照達成細粒度重新渲染。 |
 | `useId` | [components/PriceChart.tsx](src/components/PriceChart.tsx) | 為走勢圖 SVG 漸層產生跨實例不衝突的唯一 id。 |
-| `ref` 當一般 prop（R19） | [components/SearchBar.tsx](src/components/SearchBar.tsx) | 按 `/` 聚焦搜尋框——`ref` 以一般 prop 傳遞,無須 `forwardRef`。 |
-| Document Metadata(R19) | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 於元件內渲染 `<title>`,自動提升至 `<head>`。 |
+| `ref` 當一般 prop | [components/SearchBar.tsx](src/components/SearchBar.tsx) | 按 `/` 聚焦搜尋框——`ref` 以一般 prop 傳遞,無須 `forwardRef`。 |
+| Document Metadata | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 於元件內渲染 `<title>`,自動提升至 `<head>`。 |
 | `React.memo` + `content-visibility` | [components/KpiCard.tsx](src/components/KpiCard.tsx) | 大型網格的渲染效能最佳化。 |
 
 ## 系統架構
 
-```
-瀏覽器 ──/api/yahoo/*──▶ 同源代理 ──▶ Yahoo Finance
-            (開發:Vite server.proxy · 生產:Vercel Function)   │
-                                                               ▼
-                                              即時資料 ─┐
-                                                        ├─▶ Quote / Candle 轉接層 ─▶ UI
-                            失敗時改用穩定模擬資料 ──────┘
+```mermaid
+sequenceDiagram
+    participant U as 瀏覽器 (React)
+    participant P as 代理 (Vite dev · Vercel prod)
+    participant Y as Yahoo Finance
+    U->>P: GET /api/yahoo/* (同源)
+    P->>Y: 伺服器端轉發 (+ 瀏覽器 UA)
+    alt 成功
+        Y-->>P: 即時 JSON
+        P-->>U: 轉接層 → UI (LIVE)
+    else 失敗 / 被限流
+        Y-->>P: 錯誤
+        P-->>U: 轉接層降級為 mock (DEMO)
+    end
 ```
 
 - **資料轉接層** — [src/api/stocks.ts](src/api/stocks.ts):`getQuote` / `getCandles`(Yahoo `chart`)與 `getSparks`(批次 `spark`,供儀表板使用)。
