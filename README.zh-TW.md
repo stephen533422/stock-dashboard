@@ -46,6 +46,7 @@
 | `useTransition` | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 切換時間區間時保留既有走勢圖(不觸發 Suspense fallback),並呈現 pending 狀態。 |
 | `useSyncExternalStore` | [store/watchlistStore.ts](src/store/watchlistStore.ts) | 將 React 訂閱至 `localStorage` 外部 store;以單檔布林快照達成細粒度重新渲染。 |
 | `useId` | [components/PriceChart.tsx](src/components/PriceChart.tsx) | 為走勢圖 SVG 漸層產生跨實例不衝突的唯一 id。 |
+| `ref` 當一般 prop（R19） | [components/SearchBar.tsx](src/components/SearchBar.tsx) | 按 `/` 聚焦搜尋框——`ref` 以一般 prop 傳遞,無須 `forwardRef`。 |
 | Document Metadata(R19) | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 於元件內渲染 `<title>`,自動提升至 `<head>`。 |
 | `React.memo` + `content-visibility` | [components/KpiCard.tsx](src/components/KpiCard.tsx) | 大型網格的渲染效能最佳化。 |
 

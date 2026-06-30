@@ -48,6 +48,7 @@ cleanly to deterministic mock data when unavailable.
 | `useTransition` | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | Range switching keeps the old chart visible (no Suspense flash) with a pending state. |
 | `useSyncExternalStore` | [store/watchlistStore.ts](src/store/watchlistStore.ts) | Subscribes React to a `localStorage`-backed store; per-symbol snapshots give granular re-renders. |
 | `useId` | [components/PriceChart.tsx](src/components/PriceChart.tsx) | Collision-free id for the chart's SVG gradient across instances. |
+| `ref` as a prop (R19) | [components/SearchBar.tsx](src/components/SearchBar.tsx) | Press `/` to focus the search box — `ref` passed as a normal prop, no `forwardRef`. |
 | Document Metadata (R19) | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | `<title>` rendered in-component, hoisted to `<head>`. |
 | `React.memo` + `content-visibility` | [components/KpiCard.tsx](src/components/KpiCard.tsx) | Render performance for the large grid. |
 

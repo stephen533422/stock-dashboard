@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuotes } from "../hooks/useQuotes";
 import { useWatchlist } from "../hooks/useWatchlist";
@@ -15,6 +15,23 @@ export function Dashboard() {
   const [query, setQuery] = useState("");
   const [watchlistOnly, setWatchlistOnly] = useState(false);
   const deferredQuery = useDeferredValue(query);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "/") return;
+      const el = document.activeElement;
+      const typing =
+        el instanceof HTMLInputElement ||
+        el instanceof HTMLTextAreaElement ||
+        (el instanceof HTMLElement && el.isContentEditable);
+      if (typing) return;
+      e.preventDefault();
+      searchRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const rows = useMemo(
     () =>
@@ -60,7 +77,7 @@ export function Dashboard() {
           <ThemeToggle />
         </div>
       </header>
-      <SearchBar value={query} onChange={setQuery} />
+      <SearchBar value={query} onChange={setQuery} ref={searchRef} />
       <div className="kpi-grid">
         {filtered.map(({ stock, quote, spark }) => (
           <KpiCard
