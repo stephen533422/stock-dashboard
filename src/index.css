@@ -200,9 +200,6 @@ body {
 }
 
 .watch-btn {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -215,6 +212,17 @@ body {
   color: var(--text-muted);
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
+}
+
+.kpi-card .watch-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.detail-head .watch-btn {
+  margin-left: auto;
+  align-self: center;
 }
 
 .watch-btn:hover {
@@ -281,6 +289,21 @@ body {
 
 .detail-name {
   color: var(--text-muted);
+}
+
+.detail-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.detail-sector {
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
 }
 
 .data-badge {

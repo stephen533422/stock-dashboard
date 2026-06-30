@@ -1,5 +1,6 @@
 const currencyCache = new Map<string, Intl.NumberFormat>();
 const percentCache = new Map<string, Intl.NumberFormat>();
+const compactCache = new Map<string, Intl.NumberFormat>();
 
 function getCurrencyFormatter(locale: string): Intl.NumberFormat {
   let formatter = currencyCache.get(locale);
@@ -27,8 +28,24 @@ function getPercentFormatter(locale: string): Intl.NumberFormat {
   return formatter;
 }
 
+function getCompactFormatter(locale: string): Intl.NumberFormat {
+  let formatter = compactCache.get(locale);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(locale, {
+      notation: "compact",
+      maximumFractionDigits: 1,
+    });
+    compactCache.set(locale, formatter);
+  }
+  return formatter;
+}
+
 export function formatCurrency(value: number, locale: string): string {
   return getCurrencyFormatter(locale).format(value);
+}
+
+export function formatCompact(value: number, locale: string): string {
+  return getCompactFormatter(locale).format(value);
 }
 
 export function formatPercent(value: number, locale: string): string {

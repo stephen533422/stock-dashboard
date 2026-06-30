@@ -5,7 +5,8 @@ import { useQuote, useCandles } from "../hooks/useQuotes";
 import { STOCKS } from "../data/mockData";
 import { PriceChart } from "../components/PriceChart";
 import { RangeTabs } from "../components/RangeTabs";
-import { formatCurrency, formatPercent } from "../lib/format";
+import { WatchButton } from "../components/WatchButton";
+import { formatCurrency, formatPercent, formatCompact } from "../lib/format";
 import type { Range } from "../types/stock";
 
 export function StockDetail() {
@@ -31,7 +32,19 @@ export function StockDetail() {
         <span className="data-badge" data-live={quote.live}>
           {quote.live ? "LIVE" : "DEMO"}
         </span>
+        <WatchButton symbol={symbol} />
       </header>
+      {meta || quote.exchange ? (
+        <div className="detail-sub">
+          {meta ? <span className="detail-sector">{meta.sector}</span> : null}
+          {quote.exchange ? (
+            <span>
+              {quote.exchange}
+              {quote.currency ? ` · ${quote.currency}` : ""}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
       <div className="detail-price">{formatCurrency(quote.price, locale)}</div>
       <div
         className="detail-change"
@@ -57,6 +70,24 @@ export function StockDetail() {
           <dt>{t("stat.prevClose")}</dt>
           <dd>{formatCurrency(quote.previousClose, locale)}</dd>
         </div>
+        {quote.fiftyTwoWeekHigh == null ? null : (
+          <div>
+            <dt>{t("stat.week52High")}</dt>
+            <dd>{formatCurrency(quote.fiftyTwoWeekHigh, locale)}</dd>
+          </div>
+        )}
+        {quote.fiftyTwoWeekLow == null ? null : (
+          <div>
+            <dt>{t("stat.week52Low")}</dt>
+            <dd>{formatCurrency(quote.fiftyTwoWeekLow, locale)}</dd>
+          </div>
+        )}
+        {quote.volume == null ? null : (
+          <div>
+            <dt>{t("stat.volume")}</dt>
+            <dd>{formatCompact(quote.volume, locale)}</dd>
+          </div>
+        )}
       </dl>
       <RangeTabs
         value={range}

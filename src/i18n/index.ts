@@ -20,6 +20,9 @@ const resources = {
       "stat.high": "High",
       "stat.low": "Low",
       "stat.prevClose": "Prev Close",
+      "stat.week52High": "52W High",
+      "stat.week52Low": "52W Low",
+      "stat.volume": "Volume",
     },
   },
   "zh-TW": {
@@ -39,6 +42,9 @@ const resources = {
       "stat.high": "最高",
       "stat.low": "最低",
       "stat.prevClose": "昨收",
+      "stat.week52High": "52週高",
+      "stat.week52Low": "52週低",
+      "stat.volume": "成交量",
     },
   },
   "zh-CN": {
@@ -58,6 +64,9 @@ const resources = {
       "stat.high": "最高",
       "stat.low": "最低",
       "stat.prevClose": "昨收",
+      "stat.week52High": "52周高",
+      "stat.week52Low": "52周低",
+      "stat.volume": "成交量",
     },
   },
 };
