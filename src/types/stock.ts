@@ -13,6 +13,12 @@ export interface Quote {
   high: number;
   low: number;
   previousClose: number;
+  live: boolean;
+  fiftyTwoWeekHigh?: number;
+  fiftyTwoWeekLow?: number;
+  volume?: number;
+  exchange?: string;
+  currency?: string;
 }
 
 export interface Candle {

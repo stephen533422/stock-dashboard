@@ -1,13 +1,26 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getQuote, getCandles } from "../api/stocks";
-import { STOCKS, mockQuote } from "../data/mockData";
-import type { Quote, Range } from "../types/stock";
+import { getQuote, getCandles, getSparks } from "../api/stocks";
+import type { DashboardRow } from "../api/stocks";
+import { STOCKS, mockQuote, mockCandles } from "../data/mockData";
+import type { Range } from "../types/stock";
+
+function mockRow(symbol: string): DashboardRow {
+  return {
+    quote: mockQuote(symbol),
+    spark: mockCandles(symbol, "1M").map((c) => c.close),
+  };
+}
 
 export function useQuotes() {
   return useSuspenseQuery({
-    queryKey: ["quotes"],
-    queryFn: (): Promise<Quote[]> =>
-      Promise.resolve(STOCKS.map((s) => mockQuote(s.symbol))),
+    queryKey: ["dashboard"],
+    queryFn: async (): Promise<DashboardRow[]> => {
+      const map = await getSparks(STOCKS.map((s) => s.symbol)).catch(
+        () => new Map<string, DashboardRow>(),
+      );
+      return STOCKS.map((s) => map.get(s.symbol) ?? mockRow(s.symbol));
+    },
+    staleTime: 1000 * 60,
   });
 }
 

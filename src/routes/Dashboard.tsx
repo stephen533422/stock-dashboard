@@ -10,15 +10,20 @@ import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export function Dashboard() {
   const { t } = useTranslation();
-  const { data: quotes } = useQuotes();
+  const { data: dashboardRows } = useQuotes();
   const watched = useWatchlist();
   const [query, setQuery] = useState("");
   const [watchlistOnly, setWatchlistOnly] = useState(false);
   const deferredQuery = useDeferredValue(query);
 
   const rows = useMemo(
-    () => STOCKS.map((stock, i) => ({ stock, quote: quotes[i] })),
-    [quotes],
+    () =>
+      STOCKS.map((stock, i) => ({
+        stock,
+        quote: dashboardRows[i].quote,
+        spark: dashboardRows[i].spark,
+      })),
+    [dashboardRows],
   );
 
   const filtered = useMemo(() => {
@@ -57,8 +62,13 @@ export function Dashboard() {
       </header>
       <SearchBar value={query} onChange={setQuery} />
       <div className="kpi-grid">
-        {filtered.map(({ stock, quote }) => (
-          <KpiCard key={stock.symbol} quote={quote} name={stock.name} />
+        {filtered.map(({ stock, quote, spark }) => (
+          <KpiCard
+            key={stock.symbol}
+            quote={quote}
+            name={stock.name}
+            spark={spark}
+          />
         ))}
       </div>
     </div>

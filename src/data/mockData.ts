@@ -175,5 +175,6 @@ export function mockQuote(symbol: string): Quote {
     high,
     low,
     previousClose: prev,
+    live: false,
   };
 }

@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { mockCandles } from "../data/mockData";
 import { formatCurrency, formatPercent } from "../lib/format";
 import { Sparkline } from "./Sparkline";
 import { WatchButton } from "./WatchButton";
@@ -10,14 +9,15 @@ import type { Quote } from "../types/stock";
 interface KpiCardProps {
   quote: Quote;
   name: string;
+  spark: number[];
 }
 
 export const KpiCard = memo(function KpiCard({
   quote,
   name,
+  spark,
 }: Readonly<KpiCardProps>) {
   const { i18n } = useTranslation();
-  const candles = mockCandles(quote.symbol, "1M");
   const locale = i18n.resolvedLanguage ?? "en";
   const up = quote.change >= 0;
 
@@ -35,7 +35,7 @@ export const KpiCard = memo(function KpiCard({
           {up ? "▲" : "▼"} {formatCurrency(quote.change, locale)} (
           {formatPercent(quote.changePercent, locale)})
         </div>
-        <Sparkline data={candles.map((c) => c.close)} up={up} />
+        <Sparkline data={spark} up={up} />
       </Link>
     </article>
   );

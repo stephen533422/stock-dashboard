@@ -2,7 +2,6 @@ import { useState, useTransition } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuote, useCandles } from "../hooks/useQuotes";
-import { hasApiKey } from "../api/stocks";
 import { STOCKS } from "../data/mockData";
 import { PriceChart } from "../components/PriceChart";
 import { RangeTabs } from "../components/RangeTabs";
@@ -29,8 +28,8 @@ export function StockDetail() {
       <header className="detail-head">
         <h1>{symbol}</h1>
         {meta ? <span className="detail-name">{meta.name}</span> : null}
-        <span className="data-badge" data-live={hasApiKey}>
-          {hasApiKey ? "LIVE" : "DEMO"}
+        <span className="data-badge" data-live={quote.live}>
+          {quote.live ? "LIVE" : "DEMO"}
         </span>
       </header>
       <div className="detail-price">{formatCurrency(quote.price, locale)}</div>
