@@ -157,6 +157,8 @@ body {
   cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto 150px;
+  text-decoration: none;
+  color: inherit;
 }
 
 .kpi-card:hover {
@@ -198,4 +200,82 @@ body {
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   transition: var(--theme-transition);
+}
+
+.detail {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  color: var(--text);
+}
+
+.detail-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.detail-head h1 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.detail-name {
+  color: var(--text-muted);
+}
+
+.detail-price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin-top: 0.5rem;
+}
+
+.detail-change {
+  font-size: 1rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 1.5rem;
+}
+
+.range-tabs {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: opacity 0.15s ease;
+}
+
+.range-tabs[data-pending="true"] {
+  opacity: 0.6;
+}
+
+.range-tab {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  padding: 0.4rem 0.9rem;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.range-tab[data-active="true"] {
+  background: var(--accent);
+  color: #fff;
 }

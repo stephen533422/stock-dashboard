@@ -1,4 +1,5 @@
 import { memo } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useCandles } from "../hooks/useQuotes";
 import { formatCurrency, formatPercent } from "../lib/format";
@@ -20,7 +21,7 @@ export const KpiCard = memo(function KpiCard({
   const up = quote.change >= 0;
 
   return (
-    <article className="kpi-card">
+    <Link className="kpi-card" to={`/stock/${quote.symbol}`}>
       <header className="kpi-head">
         <strong>{quote.symbol}</strong>
         <span className="kpi-name">{name}</span>
@@ -34,6 +35,6 @@ export const KpiCard = memo(function KpiCard({
         {formatPercent(quote.changePercent, locale)})
       </div>
       <Sparkline data={candles.map((c) => c.close)} up={up} />
-    </article>
+    </Link>
   );
 });

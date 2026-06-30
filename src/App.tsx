@@ -1,8 +1,10 @@
 import { Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Dashboard } from "./routes/Dashboard";
+import { StockDetail } from "./routes/StockDetail";
 
 function ErrorFallback({ resetErrorBoundary }: Readonly<FallbackProps>) {
   const { t } = useTranslation();
@@ -26,7 +28,10 @@ export default function App() {
   return (
     <ErrorBoundary onReset={reset} FallbackComponent={ErrorFallback}>
       <Suspense fallback={<LoadingFallback />}>
-        <Dashboard />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/stock/:symbol" element={<StockDetail />} />
+        </Routes>
       </Suspense>
     </ErrorBoundary>
   );
