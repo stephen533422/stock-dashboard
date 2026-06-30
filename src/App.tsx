@@ -1,20 +1,7 @@
 import { Suspense } from "react";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
-import { useQuotes } from "./hooks/useQuotes";
-
-function QuotesPreview() {
-  const { data: quotes } = useQuotes();
-  return (
-    <ul>
-      {quotes.map((q) => (
-        <li key={q.symbol}>
-          {q.symbol} ${q.price} ({q.changePercent}%)
-        </li>
-      ))}
-    </ul>
-  );
-}
+import { Dashboard } from "./routes/Dashboard";
 
 function ErrorFallback({ resetErrorBoundary }: Readonly<FallbackProps>) {
   return (
@@ -32,7 +19,7 @@ export default function App() {
   return (
     <ErrorBoundary onReset={reset} FallbackComponent={ErrorFallback}>
       <Suspense fallback={<p>載入中…</p>}>
-        <QuotesPreview />
+        <Dashboard />
       </Suspense>
     </ErrorBoundary>
   );
