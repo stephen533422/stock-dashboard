@@ -155,6 +155,8 @@ body {
   gap: 0.35rem;
   transition: var(--theme-transition), transform 0.15s ease;
   cursor: pointer;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 150px;
 }
 
 .kpi-card:hover {

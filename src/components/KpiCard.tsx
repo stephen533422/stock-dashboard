@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { useCandles } from "../hooks/useQuotes";
 import { formatCurrency, formatPercent } from "../lib/format";
@@ -9,7 +10,10 @@ interface KpiCardProps {
   name: string;
 }
 
-export function KpiCard({ quote, name }: Readonly<KpiCardProps>) {
+export const KpiCard = memo(function KpiCard({
+  quote,
+  name,
+}: Readonly<KpiCardProps>) {
   const { i18n } = useTranslation();
   const { data: candles } = useCandles(quote.symbol, "1M");
   const locale = i18n.resolvedLanguage ?? "en";
@@ -32,4 +36,4 @@ export function KpiCard({ quote, name }: Readonly<KpiCardProps>) {
       <Sparkline data={candles.map((c) => c.close)} up={up} />
     </article>
   );
-}
+});
