@@ -9,9 +9,9 @@ import { StockDetail } from "./routes/StockDetail";
 function ErrorFallback({ resetErrorBoundary }: Readonly<FallbackProps>) {
   const { t } = useTranslation();
   return (
-    <div>
+    <div className="state-box" role="alert">
       <p>{t("error.loadFailed")}</p>
-      <button type="button" onClick={resetErrorBoundary}>
+      <button type="button" className="state-btn" onClick={resetErrorBoundary}>
         {t("action.retry")}
       </button>
     </div>
@@ -20,7 +20,12 @@ function ErrorFallback({ resetErrorBoundary }: Readonly<FallbackProps>) {
 
 function LoadingFallback() {
   const { t } = useTranslation();
-  return <p>{t("state.loading")}</p>;
+  return (
+    <div className="state-box" role="status" aria-live="polite">
+      <span className="spinner" aria-hidden="true" />
+      <span>{t("state.loading")}</span>
+    </div>
+  );
 }
 
 export default function App() {
