@@ -5,6 +5,14 @@ import { queryClient } from './lib/queryClient'
 import './index.css'
 import App from './App.tsx'
 
+const savedTheme = localStorage.getItem('theme')
+const initialTheme =
+  savedTheme ??
+  (globalThis.matchMedia('(prefers-color-scheme: light)').matches
+    ? 'light'
+    : 'dark')
+document.documentElement.dataset.theme = initialTheme
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

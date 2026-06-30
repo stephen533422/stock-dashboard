@@ -3,6 +3,7 @@ import { useQuotes } from "../hooks/useQuotes";
 import { STOCKS } from "../data/mockData";
 import { KpiCard } from "../components/KpiCard";
 import { SearchBar } from "../components/SearchBar";
+import { ThemeToggle } from "../components/ThemeToggle";
 
 export function Dashboard() {
   const { data: quotes } = useQuotes();
@@ -26,7 +27,10 @@ export function Dashboard() {
 
   return (
     <div className="dashboard">
-      <h1>Stock Dashboard</h1>
+      <header className="dashboard-head">
+        <h1>Stock Dashboard</h1>
+        <ThemeToggle />
+      </header>
       <SearchBar value={query} onChange={setQuery} />
       <div className="kpi-grid">
         {filtered.map(({ stock, quote }) => (

@@ -20,6 +20,7 @@ export function Sparkline({ data, up }: Readonly<SparklineProps>) {
           fillOpacity={0.15}
           strokeWidth={1.5}
           dot={false}
+          activeDot={false}
           isAnimationActive={false}
         />
       </AreaChart>
