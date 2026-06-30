@@ -1,11 +1,14 @@
 import { useDeferredValue, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuotes } from "../hooks/useQuotes";
 import { STOCKS } from "../data/mockData";
 import { KpiCard } from "../components/KpiCard";
 import { SearchBar } from "../components/SearchBar";
 import { ThemeToggle } from "../components/ThemeToggle";
+import { LanguageSwitcher } from "../components/LanguageSwitcher";
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const { data: quotes } = useQuotes();
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
@@ -28,8 +31,11 @@ export function Dashboard() {
   return (
     <div className="dashboard">
       <header className="dashboard-head">
-        <h1>Stock Dashboard</h1>
-        <ThemeToggle />
+        <h1>{t("app.title")}</h1>
+        <div className="head-controls">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </header>
       <SearchBar value={query} onChange={setQuery} />
       <div className="kpi-grid">

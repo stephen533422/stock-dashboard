@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../hooks/useTheme";
 
 const ICON_PROPS = {
@@ -30,12 +31,13 @@ function MoonIcon() {
 
 export function ThemeToggle() {
   const { theme, toggle } = useTheme();
+  const { t } = useTranslation();
   return (
     <button
       type="button"
       className="theme-toggle"
       onClick={toggle}
-      aria-label="切換深淺色"
+      aria-label={t("theme.toggle")}
     >
       {theme === "dark" ? <SunIcon /> : <MoonIcon />}
     </button>

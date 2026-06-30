@@ -73,6 +73,29 @@ body {
   transition: var(--theme-transition);
 }
 
+.head-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.lang-switcher {
+  height: 40px;
+  padding: 0 0.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--theme-transition);
+}
+
+.lang-switcher:hover {
+  background: var(--surface-hover);
+}
+
 .theme-toggle {
   flex-shrink: 0;
   width: 40px;
