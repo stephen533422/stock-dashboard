@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useCandles } from "../hooks/useQuotes";
+import { mockCandles } from "../data/mockData";
 import { formatCurrency, formatPercent } from "../lib/format";
 import { Sparkline } from "./Sparkline";
 import { WatchButton } from "./WatchButton";
@@ -17,7 +17,7 @@ export const KpiCard = memo(function KpiCard({
   name,
 }: Readonly<KpiCardProps>) {
   const { i18n } = useTranslation();
-  const { data: candles } = useCandles(quote.symbol, "1M");
+  const candles = mockCandles(quote.symbol, "1M");
   const locale = i18n.resolvedLanguage ?? "en";
   const up = quote.change >= 0;
 

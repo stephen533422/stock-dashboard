@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { getQuote, getCandles } from "../api/finnhub";
+import { getQuote, getCandles } from "../api/stocks";
 import { STOCKS, mockQuote } from "../data/mockData";
 import type { Quote, Range } from "../types/stock";
 
@@ -22,5 +22,7 @@ export function useCandles(symbol: string, range: Range) {
   return useSuspenseQuery({
     queryKey: ["candles", symbol, range],
     queryFn: () => getCandles(symbol, range),
+    staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60,
   });
 }
