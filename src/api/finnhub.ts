@@ -8,10 +8,19 @@ export async function getQuote(symbol: string): Promise<Quote> {
   if (!hasApiKey) return mockQuote(symbol);
   try {
     const { data } = await finnhub.get("/quote", { params: { symbol } });
-    // Finnhub：c=現價 d=漲跌 dp=漲跌幅
+    // Finnhub：c=現價 d=漲跌 dp=漲跌幅 o=開盤 h=最高 l=最低 pc=昨收
     if (typeof data.c !== "number" || data.c === 0)
       throw new Error("empty quote");
-    return { symbol, price: data.c, change: data.d, changePercent: data.dp };
+    return {
+      symbol,
+      price: data.c,
+      change: data.d,
+      changePercent: data.dp,
+      open: data.o,
+      high: data.h,
+      low: data.l,
+      previousClose: data.pc,
+    };
   } catch {
     return mockQuote(symbol); // 失敗改用mockData
   }

@@ -160,7 +160,20 @@ export function mockQuote(symbol: string): Quote {
   const candles = mockCandles(symbol, "1M");
   const last = candles[candles.length - 1].close;
   const prev = candles[candles.length - 2].close;
-  const change = Number((last - prev).toFixed(2));
-  const changePercent = Number(((change / prev) * 100).toFixed(2));
-  return { symbol, price: last, change, changePercent };
+  const round = (value: number) => Number(value.toFixed(2));
+  const open = round(prev * (1 + (rand(`${symbol}-o`) - 0.5) * 0.01));
+  const high = round(Math.max(last, open, prev) * (1 + rand(`${symbol}-h`) * 0.01));
+  const low = round(Math.min(last, open, prev) * (1 - rand(`${symbol}-l`) * 0.01));
+  const change = round(last - prev);
+  const changePercent = round((change / prev) * 100);
+  return {
+    symbol,
+    price: last,
+    change,
+    changePercent,
+    open,
+    high,
+    low,
+    previousClose: prev,
+  };
 }

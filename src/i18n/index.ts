@@ -16,6 +16,10 @@ const resources = {
       "filter.watchlist": "Watchlist",
       "watch.add": "Add to watchlist",
       "watch.remove": "Remove from watchlist",
+      "stat.open": "Open",
+      "stat.high": "High",
+      "stat.low": "Low",
+      "stat.prevClose": "Prev Close",
     },
   },
   "zh-TW": {
@@ -31,6 +35,10 @@ const resources = {
       "filter.watchlist": "觀察列表",
       "watch.add": "加入觀察列表",
       "watch.remove": "移除觀察列表",
+      "stat.open": "開盤",
+      "stat.high": "最高",
+      "stat.low": "最低",
+      "stat.prevClose": "昨收",
     },
   },
   "zh-CN": {
@@ -46,6 +54,10 @@ const resources = {
       "filter.watchlist": "观察列表",
       "watch.add": "加入观察列表",
       "watch.remove": "移除观察列表",
+      "stat.open": "开盘",
+      "stat.high": "最高",
+      "stat.low": "最低",
+      "stat.prevClose": "昨收",
     },
   },
 };

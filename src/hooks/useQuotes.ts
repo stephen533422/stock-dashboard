@@ -1,13 +1,13 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getQuote, getCandles } from "../api/finnhub";
-import { STOCKS } from "../data/mockData";
+import { STOCKS, mockQuote } from "../data/mockData";
 import type { Quote, Range } from "../types/stock";
 
 export function useQuotes() {
   return useSuspenseQuery({
     queryKey: ["quotes"],
     queryFn: (): Promise<Quote[]> =>
-      Promise.all(STOCKS.map((s) => getQuote(s.symbol))),
+      Promise.resolve(STOCKS.map((s) => mockQuote(s.symbol))),
   });
 }
 
