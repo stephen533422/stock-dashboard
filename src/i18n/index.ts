@@ -13,6 +13,9 @@ const resources = {
       "action.back": "Back",
       "theme.toggle": "Toggle theme",
       "language.aria": "Select language",
+      "filter.watchlist": "Watchlist",
+      "watch.add": "Add to watchlist",
+      "watch.remove": "Remove from watchlist",
     },
   },
   "zh-TW": {
@@ -25,6 +28,9 @@ const resources = {
       "action.back": "返回",
       "theme.toggle": "切換深淺色",
       "language.aria": "選擇語言",
+      "filter.watchlist": "觀察列表",
+      "watch.add": "加入觀察列表",
+      "watch.remove": "移除觀察列表",
     },
   },
   "zh-CN": {
@@ -37,6 +43,9 @@ const resources = {
       "action.back": "返回",
       "theme.toggle": "切换深浅色",
       "language.aria": "选择语言",
+      "filter.watchlist": "观察列表",
+      "watch.add": "加入观察列表",
+      "watch.remove": "移除观察列表",
     },
   },
 };

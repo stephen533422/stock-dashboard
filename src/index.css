@@ -80,6 +80,30 @@ body {
   flex-shrink: 0;
 }
 
+.watchlist-filter {
+  height: 40px;
+  padding: 0 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--theme-transition);
+}
+
+.watchlist-filter:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.watchlist-filter[data-active="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 .lang-switcher {
   height: 40px;
   padding: 0 0.6rem;
@@ -146,19 +170,14 @@ body {
 }
 
 .kpi-card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1rem 1.1rem 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
   transition: var(--theme-transition), transform 0.15s ease;
-  cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto 150px;
-  text-decoration: none;
-  color: inherit;
 }
 
 .kpi-card:hover {
@@ -166,16 +185,45 @@ body {
   transform: translateY(-2px);
 }
 
-.kpi-head {
+.kpi-card-body {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
 }
 
-.kpi-head strong {
+.kpi-symbol {
   font-size: 1.05rem;
   font-weight: 700;
+}
+
+.watch-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.watch-btn:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.watch-btn[data-watched="true"] {
+  color: #f5a623;
 }
 
 .kpi-name {
@@ -184,7 +232,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 60%;
+  padding-right: 1.75rem;
   transition: var(--theme-transition);
 }
 

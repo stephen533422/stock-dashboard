@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useCandles } from "../hooks/useQuotes";
 import { formatCurrency, formatPercent } from "../lib/format";
 import { Sparkline } from "./Sparkline";
+import { WatchButton } from "./WatchButton";
 import type { Quote } from "../types/stock";
 
 interface KpiCardProps {
@@ -21,20 +22,21 @@ export const KpiCard = memo(function KpiCard({
   const up = quote.change >= 0;
 
   return (
-    <Link className="kpi-card" to={`/stock/${quote.symbol}`}>
-      <header className="kpi-head">
-        <strong>{quote.symbol}</strong>
+    <article className="kpi-card">
+      <WatchButton symbol={quote.symbol} />
+      <Link className="kpi-card-body" to={`/stock/${quote.symbol}`}>
+        <strong className="kpi-symbol">{quote.symbol}</strong>
         <span className="kpi-name">{name}</span>
-      </header>
-      <div className="kpi-price">{formatCurrency(quote.price, locale)}</div>
-      <div
-        className="kpi-change"
-        style={{ color: up ? "var(--up)" : "var(--down)" }}
-      >
-        {up ? "▲" : "▼"} {formatCurrency(quote.change, locale)} (
-        {formatPercent(quote.changePercent, locale)})
-      </div>
-      <Sparkline data={candles.map((c) => c.close)} up={up} />
-    </Link>
+        <div className="kpi-price">{formatCurrency(quote.price, locale)}</div>
+        <div
+          className="kpi-change"
+          style={{ color: up ? "var(--up)" : "var(--down)" }}
+        >
+          {up ? "▲" : "▼"} {formatCurrency(quote.change, locale)} (
+          {formatPercent(quote.changePercent, locale)})
+        </div>
+        <Sparkline data={candles.map((c) => c.close)} up={up} />
+      </Link>
+    </article>
   );
 });
