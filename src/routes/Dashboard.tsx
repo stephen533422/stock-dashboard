@@ -7,6 +7,7 @@ import { KpiCard } from "../components/KpiCard";
 import { SearchBar } from "../components/SearchBar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import { Logo } from "../components/Logo";
 
 export function Dashboard() {
   const { t } = useTranslation();
@@ -62,16 +63,23 @@ export function Dashboard() {
   return (
     <div className="dashboard">
       <header className="dashboard-head">
-        <h1>{t("app.title")}</h1>
+        <h1 className="dashboard-title">
+          <Logo className="dashboard-logo" size={28} />
+          <span className="title-text">{t("app.title")}</span>
+        </h1>
         <div className="head-controls">
           <button
             type="button"
             className="watchlist-filter"
             data-active={watchlistOnly}
+            aria-label={t("filter.watchlist")}
             onClick={() => setWatchlistOnly((on) => !on)}
           >
-            ★ {t("filter.watchlist")}
-            {watched.size > 0 ? ` (${watched.size})` : ""}
+            <span aria-hidden="true">★</span>
+            <span className="watchlist-label">{t("filter.watchlist")}</span>
+            {watched.size > 0 ? (
+              <span className="watchlist-count">{watched.size}</span>
+            ) : null}
           </button>
           <LanguageSwitcher />
           <ThemeToggle />

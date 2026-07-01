@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { ErrorBoundary, type FallbackProps } from "react-error-boundary";
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
+import { Logo } from "./components/Logo";
 import { Dashboard } from "./routes/Dashboard";
 import { StockDetail } from "./routes/StockDetail";
 
@@ -21,9 +22,8 @@ function ErrorFallback({ resetErrorBoundary }: Readonly<FallbackProps>) {
 function LoadingFallback() {
   const { t } = useTranslation();
   return (
-    <div className="state-box" role="status" aria-live="polite">
-      <span className="spinner" aria-hidden="true" />
-      <span>{t("state.loading")}</span>
+    <div className="state-box" role="status" aria-label={t("state.loading")}>
+      <Logo className="brand-loader" size={120} />
     </div>
   );
 }

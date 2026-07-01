@@ -63,23 +63,25 @@ body {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  min-height: 60vh;
+  min-height: 100vh;
   color: var(--text-muted);
   font-size: 0.95rem;
 }
 
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+.brand-loader {
+  color: var(--accent);
+  animation: pulse 1.2s ease-in-out infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.9);
   }
 }
 
@@ -106,11 +108,19 @@ body {
 }
 
 .dashboard-head h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
   transition: var(--theme-transition);
+}
+
+.dashboard-logo {
+  flex-shrink: 0;
+  color: var(--accent);
 }
 
 .head-controls {
@@ -121,6 +131,9 @@ body {
 }
 
 .watchlist-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
   height: 40px;
   padding: 0 0.85rem;
   background: var(--surface);
@@ -144,6 +157,41 @@ body {
   color: var(--accent);
 }
 
+.watchlist-count {
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: var(--border);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.title-text {
+  white-space: nowrap;
+}
+
+/* Stage 1: drop the watchlist label first (frees the most space) */
+@media (max-width: 640px) {
+  .watchlist-filter .watchlist-label {
+    display: none;
+  }
+  .watchlist-filter {
+    padding: 0 0.6rem;
+  }
+}
+
+/* Stage 2: collapse the title to just the logo */
+@media (max-width: 460px) {
+  .dashboard-head {
+    gap: 0.5rem;
+  }
+  .head-controls {
+    gap: 0.4rem;
+  }
+  .dashboard-head .title-text {
+    display: none;
+  }
+}
+
 .lang-switcher {
   height: 40px;
   padding: 0 0.6rem;
@@ -164,7 +212,7 @@ body {
   flex-shrink: 0;
   width: 40px;
   height: 40px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   background: var(--surface);
@@ -240,7 +288,7 @@ body {
 }
 
 .watch-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   width: 30px;
@@ -405,7 +453,8 @@ body {
 }
 
 .range-tabs {
-  display: inline-flex;
+  display: flex;
+  width: fit-content;
   gap: 0.25rem;
   margin-bottom: 1rem;
   padding: 0.25rem;
