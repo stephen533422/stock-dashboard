@@ -1,5 +1,4 @@
 import type { Quote, Candle, Range } from "../types/stock";
-import { mockQuote, mockCandles } from "../data/mockData";
 import { yahoo } from "../lib/yahooClient";
 
 interface YahooQuoteBlock {
@@ -45,53 +44,45 @@ async function fetchChart(symbol: string, range: string): Promise<YahooResult> {
 }
 
 export async function getQuote(symbol: string): Promise<Quote> {
-  try {
-    const result = await fetchChart(symbol, "5d");
-    const { meta } = result;
-    const block = result.indicators.quote[0];
-    const closes = block.close.filter((c): c is number => c != null);
-    const price = meta.regularMarketPrice ?? closes.at(-1);
-    const prev = closes.at(-2);
-    if (price == null || prev == null) throw new Error("no quote");
-    const change = price - prev;
-    return {
-      symbol,
-      price: round(price),
-      change: round(change),
-      changePercent: round((change / prev) * 100),
-      open: round(block.open.at(-1) ?? prev),
-      high: round(meta.regularMarketDayHigh ?? price),
-      low: round(meta.regularMarketDayLow ?? price),
-      previousClose: round(prev),
-      live: true,
-      name: meta.longName ?? meta.shortName,
-      fiftyTwoWeekHigh:
-        meta.fiftyTwoWeekHigh == null ? undefined : round(meta.fiftyTwoWeekHigh),
-      fiftyTwoWeekLow:
-        meta.fiftyTwoWeekLow == null ? undefined : round(meta.fiftyTwoWeekLow),
-      volume: meta.regularMarketVolume,
-      exchange: meta.fullExchangeName,
-      currency: meta.currency,
-    };
-  } catch {
-    return mockQuote(symbol);
-  }
+  const result = await fetchChart(symbol, "5d");
+  const { meta } = result;
+  const block = result.indicators.quote[0];
+  const closes = block.close.filter((c): c is number => c != null);
+  const price = meta.regularMarketPrice ?? closes.at(-1);
+  const prev = closes.at(-2);
+  if (price == null || prev == null) throw new Error("no quote");
+  const change = price - prev;
+  return {
+    symbol,
+    price: round(price),
+    change: round(change),
+    changePercent: round((change / prev) * 100),
+    open: round(block.open.at(-1) ?? prev),
+    high: round(meta.regularMarketDayHigh ?? price),
+    low: round(meta.regularMarketDayLow ?? price),
+    previousClose: round(prev),
+    live: true,
+    name: meta.longName ?? meta.shortName,
+    fiftyTwoWeekHigh:
+      meta.fiftyTwoWeekHigh == null ? undefined : round(meta.fiftyTwoWeekHigh),
+    fiftyTwoWeekLow:
+      meta.fiftyTwoWeekLow == null ? undefined : round(meta.fiftyTwoWeekLow),
+    volume: meta.regularMarketVolume,
+    exchange: meta.fullExchangeName,
+    currency: meta.currency,
+  };
 }
 
 export async function getCandles(
   symbol: string,
   range: Range,
 ): Promise<Candle[]> {
-  try {
-    const result = await fetchChart(symbol, RANGE_CFG[range]);
-    if (!result.timestamp) throw new Error("no candles");
-    const closes = result.indicators.quote[0].close;
-    return result.timestamp
-      .map((time, i) => ({ time, close: closes[i] }))
-      .filter((candle): candle is Candle => candle.close != null);
-  } catch {
-    return mockCandles(symbol, range);
-  }
+  const result = await fetchChart(symbol, RANGE_CFG[range]);
+  if (!result.timestamp) throw new Error("no candles");
+  const closes = result.indicators.quote[0].close;
+  return result.timestamp
+    .map((time, i) => ({ time, close: closes[i] }))
+    .filter((candle): candle is Candle => candle.close != null);
 }
 
 interface SparkEntry {

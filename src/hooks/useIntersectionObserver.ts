@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useCallback, useRef, useState } from "react";
 
 interface Options {
   rootMargin?: string;
@@ -10,23 +10,34 @@ export function useIntersectionObserver<T extends Element>({
   rootMargin = "0px",
   threshold = 0,
   once = true,
-}: Options = {}): [RefObject<T | null>, boolean] {
-  const ref = useRef<T | null>(null);
+}: Options = {}): [(node: T | null) => void, boolean] {
   const [inView, setInView] = useState(false);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const frozen = useRef(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setInView(entry.isIntersecting);
-        if (entry.isIntersecting && once) observer.disconnect();
-      },
-      { rootMargin, threshold },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [rootMargin, threshold, once]);
+  const ref = useCallback(
+    (node: T | null) => {
+      observerRef.current?.disconnect();
+      if (!node) {
+        setInView(false);
+        return;
+      }
+      if (frozen.current) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          setInView(entry.isIntersecting);
+          if (entry.isIntersecting && once) {
+            frozen.current = true;
+            observer.disconnect();
+          }
+        },
+        { rootMargin, threshold },
+      );
+      observer.observe(node);
+      observerRef.current = observer;
+    },
+    [rootMargin, threshold, once],
+  );
 
   return [ref, inView];
 }

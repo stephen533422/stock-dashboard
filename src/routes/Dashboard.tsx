@@ -7,6 +7,7 @@ import { KpiCard } from "../components/KpiCard";
 import { SearchBar } from "../components/SearchBar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import { DataSourceBadge } from "../components/DataSourceBadge";
 import { Logo } from "../components/Logo";
 
 export function Dashboard() {
@@ -71,6 +72,7 @@ export function Dashboard() {
           <span className="title-text">{t("app.title")}</span>
         </h1>
         <div className="head-controls">
+          <DataSourceBadge />
           <button
             type="button"
             className="watchlist-filter"

@@ -6,6 +6,7 @@ import { STOCKS } from "../data/mockData";
 import { PriceChart } from "../components/PriceChart";
 import { RangeTabs } from "../components/RangeTabs";
 import { WatchButton } from "../components/WatchButton";
+import { DataSourceBadge } from "../components/DataSourceBadge";
 import { formatCurrency, formatPercent, formatCompact } from "../lib/format";
 import type { Range } from "../types/stock";
 
@@ -32,9 +33,7 @@ export function StockDetail() {
         {displayName ? (
           <span className="detail-name">{displayName}</span>
         ) : null}
-        <span className="data-badge" data-live={quote.live}>
-          {quote.live ? "LIVE" : "DEMO"}
-        </span>
+        <DataSourceBadge />
         <WatchButton symbol={symbol} />
       </header>
       {meta || quote.exchange ? (
