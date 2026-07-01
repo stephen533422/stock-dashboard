@@ -346,6 +346,18 @@ body {
   transition: var(--theme-transition);
 }
 
+.sparkline-placeholder {
+  height: 40px;
+}
+
+.scroll-sentinel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3rem;
+  padding: 1.5rem 0;
+}
+
 .detail {
   max-width: 900px;
   margin: 0 auto;

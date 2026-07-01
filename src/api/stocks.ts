@@ -19,6 +19,8 @@ interface YahooResult {
     fiftyTwoWeekLow?: number;
     fullExchangeName?: string;
     currency?: string;
+    longName?: string;
+    shortName?: string;
   };
   timestamp?: number[];
   indicators: { quote: YahooQuoteBlock[] };
@@ -62,6 +64,7 @@ export async function getQuote(symbol: string): Promise<Quote> {
       low: round(meta.regularMarketDayLow ?? price),
       previousClose: round(prev),
       live: true,
+      name: meta.longName ?? meta.shortName,
       fiftyTwoWeekHigh:
         meta.fiftyTwoWeekHigh == null ? undefined : round(meta.fiftyTwoWeekHigh),
       fiftyTwoWeekLow:
@@ -98,6 +101,68 @@ interface SparkEntry {
 export interface DashboardRow {
   quote: Quote;
   spark: number[];
+}
+
+export interface ScreenerItem {
+  symbol: string;
+  name: string;
+  quote: Quote;
+}
+
+interface ScreenerQuote {
+  symbol: string;
+  shortName?: string;
+  longName?: string;
+  regularMarketPrice?: number;
+  regularMarketChange?: number;
+  regularMarketChangePercent?: number;
+  regularMarketOpen?: number;
+  regularMarketDayHigh?: number;
+  regularMarketDayLow?: number;
+  regularMarketPreviousClose?: number;
+  regularMarketVolume?: number;
+  fiftyTwoWeekHigh?: number;
+  fiftyTwoWeekLow?: number;
+  fullExchangeName?: string;
+  currency?: string;
+}
+
+export async function getScreener(
+  scrId: string,
+  start: number,
+  count: number,
+): Promise<{ items: ScreenerItem[]; total: number }> {
+  const { data } = await yahoo.get("/v1/finance/screener/predefined/saved", {
+    params: { scrIds: scrId, start, count },
+  });
+  const result = data?.finance?.result?.[0];
+  const quotes: ScreenerQuote[] = result?.quotes ?? [];
+  const items = quotes
+    .filter((q) => q.regularMarketPrice != null)
+    .map((q) => ({
+      symbol: q.symbol,
+      name: q.shortName ?? q.longName ?? q.symbol,
+      quote: {
+        symbol: q.symbol,
+        price: round(q.regularMarketPrice ?? 0),
+        change: round(q.regularMarketChange ?? 0),
+        changePercent: round(q.regularMarketChangePercent ?? 0),
+        open: round(q.regularMarketOpen ?? 0),
+        high: round(q.regularMarketDayHigh ?? 0),
+        low: round(q.regularMarketDayLow ?? 0),
+        previousClose: round(q.regularMarketPreviousClose ?? 0),
+        live: true,
+        name: q.shortName ?? q.longName,
+        fiftyTwoWeekHigh:
+          q.fiftyTwoWeekHigh == null ? undefined : round(q.fiftyTwoWeekHigh),
+        fiftyTwoWeekLow:
+          q.fiftyTwoWeekLow == null ? undefined : round(q.fiftyTwoWeekLow),
+        volume: q.regularMarketVolume,
+        exchange: q.fullExchangeName,
+        currency: q.currency,
+      },
+    }));
+  return { items, total: result?.total ?? items.length };
 }
 
 const SPARK_CHUNK = 20;
