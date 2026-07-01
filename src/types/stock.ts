@@ -9,6 +9,16 @@ export interface Quote {
   price: number;
   change: number;
   changePercent: number;
+  open: number;
+  high: number;
+  low: number;
+  previousClose: number;
+  live: boolean;
+  fiftyTwoWeekHigh?: number;
+  fiftyTwoWeekLow?: number;
+  volume?: number;
+  exchange?: string;
+  currency?: string;
 }
 
 export interface Candle {
