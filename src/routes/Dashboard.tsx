@@ -64,6 +64,8 @@ export function Dashboard() {
     return result;
   }, [rows, deferredQuery, watchlistOnly, watched]);
 
+  const isStale = query !== deferredQuery;
+
   return (
     <div className="dashboard">
       <header className="dashboard-head">
@@ -91,7 +93,7 @@ export function Dashboard() {
         </div>
       </header>
       <SearchBar value={query} onChange={setQuery} ref={searchRef} />
-      <div className="kpi-grid">
+      <div className="kpi-grid" data-stale={isStale}>
         {filtered.map(({ stock, quote, spark }) => (
           <KpiCard
             key={stock.symbol}
