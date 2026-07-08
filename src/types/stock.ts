@@ -14,6 +14,7 @@ export interface Quote {
   low: number;
   previousClose: number;
   live: boolean;
+  name?: string;
   fiftyTwoWeekHigh?: number;
   fiftyTwoWeekLow?: number;
   volume?: number;

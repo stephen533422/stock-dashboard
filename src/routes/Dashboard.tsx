@@ -2,16 +2,17 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useQuotes } from "../hooks/useQuotes";
 import { useWatchlist } from "../hooks/useWatchlist";
-import { STOCKS } from "../data/mockData";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import { KpiCard } from "../components/KpiCard";
 import { SearchBar } from "../components/SearchBar";
 import { ThemeToggle } from "../components/ThemeToggle";
 import { LanguageSwitcher } from "../components/LanguageSwitcher";
+import { DataSourceBadge } from "../components/DataSourceBadge";
 import { Logo } from "../components/Logo";
 
 export function Dashboard() {
   const { t } = useTranslation();
-  const { data: dashboardRows } = useQuotes();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useQuotes();
   const watched = useWatchlist();
   const [query, setQuery] = useState("");
   const [watchlistOnly, setWatchlistOnly] = useState(false);
@@ -34,15 +35,18 @@ export function Dashboard() {
     return () => document.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const rows = useMemo(
-    () =>
-      STOCKS.map((stock, i) => ({
-        stock,
-        quote: dashboardRows[i].quote,
-        spark: dashboardRows[i].spark,
-      })),
-    [dashboardRows],
-  );
+  const rows = useMemo(() => data.pages.flatMap((p) => p.items), [data.pages]);
+
+  const [sentinelRef, sentinelInView] = useIntersectionObserver<HTMLDivElement>({
+    threshold: 1,
+    once: false,
+  });
+
+  useEffect(() => {
+    if (sentinelInView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [sentinelInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const filtered = useMemo(() => {
     const q = deferredQuery.trim().toLowerCase();
@@ -60,6 +64,8 @@ export function Dashboard() {
     return result;
   }, [rows, deferredQuery, watchlistOnly, watched]);
 
+  const isStale = query !== deferredQuery;
+
   return (
     <div className="dashboard">
       <header className="dashboard-head">
@@ -68,6 +74,7 @@ export function Dashboard() {
           <span className="title-text">{t("app.title")}</span>
         </h1>
         <div className="head-controls">
+          <DataSourceBadge />
           <button
             type="button"
             className="watchlist-filter"
@@ -86,7 +93,7 @@ export function Dashboard() {
         </div>
       </header>
       <SearchBar value={query} onChange={setQuery} ref={searchRef} />
-      <div className="kpi-grid">
+      <div className="kpi-grid" data-stale={isStale}>
         {filtered.map(({ stock, quote, spark }) => (
           <KpiCard
             key={stock.symbol}
@@ -96,6 +103,13 @@ export function Dashboard() {
           />
         ))}
       </div>
+      {hasNextPage ? (
+        <div ref={sentinelRef} className="scroll-sentinel">
+          {isFetchingNextPage ? (
+            <Logo className="brand-loader" size={28} />
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

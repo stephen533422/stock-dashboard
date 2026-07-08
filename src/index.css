@@ -255,6 +255,11 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1rem;
+  transition: opacity 0.2s ease;
+}
+
+.kpi-grid[data-stale="true"] {
+  opacity: 0.6;
 }
 
 .kpi-card {
@@ -346,6 +351,18 @@ body {
   transition: var(--theme-transition);
 }
 
+.sparkline-placeholder {
+  height: 40px;
+}
+
+.scroll-sentinel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 3rem;
+  padding: 1.5rem 0;
+}
+
 .detail {
   max-width: 900px;
   margin: 0 auto;
@@ -396,13 +413,21 @@ body {
 
 .data-badge {
   align-self: center;
-  padding: 0.15rem 0.5rem;
+  padding: 0.2rem 0.55rem;
+  border: none;
   border-radius: 6px;
+  font-family: inherit;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   background: var(--border);
   color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--theme-transition), filter 0.15s;
+}
+
+.data-badge:hover {
+  filter: brightness(1.1);
 }
 
 .data-badge[data-live="true"] {

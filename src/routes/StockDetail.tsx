@@ -6,6 +6,7 @@ import { STOCKS } from "../data/mockData";
 import { PriceChart } from "../components/PriceChart";
 import { RangeTabs } from "../components/RangeTabs";
 import { WatchButton } from "../components/WatchButton";
+import { DataSourceBadge } from "../components/DataSourceBadge";
 import { formatCurrency, formatPercent, formatCompact } from "../lib/format";
 import type { Range } from "../types/stock";
 
@@ -18,6 +19,7 @@ export function StockDetail() {
   const { data: quote } = useQuote(symbol);
   const { data: candles } = useCandles(symbol, range);
   const meta = STOCKS.find((stock) => stock.symbol === symbol);
+  const displayName = meta?.name ?? quote.name;
   const up = quote.change >= 0;
 
   return (
@@ -28,10 +30,10 @@ export function StockDetail() {
       </Link>
       <header className="detail-head">
         <h1>{symbol}</h1>
-        {meta ? <span className="detail-name">{meta.name}</span> : null}
-        <span className="data-badge" data-live={quote.live}>
-          {quote.live ? "LIVE" : "DEMO"}
-        </span>
+        {displayName ? (
+          <span className="detail-name">{displayName}</span>
+        ) : null}
+        <DataSourceBadge />
         <WatchButton symbol={symbol} />
       </header>
       {meta || quote.exchange ? (

@@ -6,23 +6,21 @@
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-5-FF4154?logo=reactquery&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Deploy-Vercel-000000?logo=vercel&logoColor=white)
 
-以生產標準打造的股票儀表板,旨在實踐現代 **React 19** 的核心設計模式——Suspense 資料載入、
-並行渲染(concurrent rendering)與外部狀態管理(external store)——並整合即時行情、
-完整多語系,以及具韌性的離線降級機制。
+旨在實踐現代 **React 19** 的核心設計模式——Suspense 資料載入、
+並行渲染(concurrent rendering)與外部狀態管理(external store)
 
-**線上 Demo:** **[stock-dashboard-ten-opal.vercel.app](https://stock-dashboard-ten-opal.vercel.app)**  ·  [English](README.md) | 繁體中文
+**線上 Demo:** **[stock-dashboard-ten-opal.vercel.app](https://stock-dashboard-ten-opal.vercel.app)** · [English](README.md) | 繁體中文
 
 ---
 
 ## 專案簡介
 
-涵蓋約 113 檔、橫跨 10 個產業的美股儀表板,提供:具即時報價與 sparkline 的卡片、
-前端即時搜尋、具持久化的觀察列表,以及支援時間區間切換的個股走勢圖詳情頁。
-行情即時取自 Yahoo Finance(經同源代理),於來源不可用時自動降級為穩定的模擬資料。
+具即時行情與走勢圖的卡片、即時清單過濾、可自選的觀察列表,以及支援時間區間切換的個股走勢圖詳情頁，還有可切換的主題與語言。
+股市資料取自 Yahoo Finance,並於來源不可用時切換為模擬資料。
 
 ## 功能
 
-- **儀表板** — 響應式卡片網格、即時價格與漲跌幅、內嵌 sparkline、即時搜尋、觀察列表篩選。
+- **儀表板** — 響應式卡片網格、即時價格與漲跌幅、內嵌走勢圖、即時清單過濾、觀察列表篩選。
 - **個股詳情** — 即時報價(開高低、昨收、52 週高低、成交量)、支援 `1W / 1M / 3M / 1Y` 切換的動畫面積圖。
 - **觀察列表** — 任意收藏,持久化至 `localStorage`,並於全站同步。
 - **主題** — 深 / 淺色,跟隨系統偏好、可持久化。
@@ -32,24 +30,24 @@
 
 - **以 Suspense 為核心的資料層**:資料載入採用 `useSuspenseQuery`,外層僅需單一 `Suspense` + `ErrorBoundary`,功能元件得以直接取用 `data`,避免 `isLoading` / `isError` 狀態判斷散落於各元件。
 - **以 TanStack Query 管理伺服器狀態**:單一 `QueryClient` 統一行為(失敗重試 1 次、停用 `refetchOnWindowFocus`);快取以 `staleTime` 分層——預設 60 秒、日線 K 線提高為 1 小時,並依查詢參數各自快取,避免重複請求。
-- **並行渲染的使用者體驗**:以 `useDeferredValue`(搜尋)與 `useTransition`(切換走勢圖區間)將高成本渲染降為低優先,確保輸入與導航全程維持流暢。
-- **大量項目的渲染效能**:113 張卡片透過 `React.memo`(過濾時略過未變動卡片)與 CSS `content-visibility`(略過畫面外的版面與繪製)維持流暢。
-- **具韌性的降級機制**:任一網路路徑失敗時,皆降級為穩定且 seeded 的模擬資料(以 FNV-1a 雜湊產生,確保重新整理後一致),於離線環境下仍完全可用。
+- **並行渲染的使用者體驗**:以 `useDeferredValue`(清單過濾)與 `useTransition`(切換走勢圖時間區間)將高成本渲染降為低優先,確保輸入與導航全程維持流暢。
+- **大量項目的渲染效能**:卡片透過 `React.memo`(過濾時略過未變動卡片)與 CSS `content-visibility`(略過畫面外的版面與繪製)維持流暢。
+- **具韌性的降級機制**:任一網路路徑失敗時,皆降級為穩定的模擬資料(以 FNV-1a 雜湊產生,確保重新整理後一致),於離線環境下仍完全可用。
 - **零金鑰的資料代理**:Yahoo Finance 不開放瀏覽器 CORS,故所有請求均經由同源代理——開發環境採 Vite、生產環境採 Vercel Function——**無需任何 API 金鑰**,從根本消除金鑰外洩疑慮。
 - **與資料供應商解耦的轉接層**:所有資料存取集中於單一模組([src/api/stocks.ts](src/api/stocks.ts)),更換資料來源無須改動任何元件。
 
 ## 採用的 React 模式
 
-| 模式 | 位置 | 作用 |
-|------|------|------|
-| `useSuspenseQuery` + `Suspense` + `ErrorBoundary` | [hooks/useQuotes.ts](src/hooks/useQuotes.ts)、[App.tsx](src/App.tsx) | Suspense 資料載入;重試機制以 `useQueryErrorResetBoundary` 串接。 |
-| `useDeferredValue` | [routes/Dashboard.tsx](src/routes/Dashboard.tsx) | 維持搜尋輸入的即時回應,過濾後的網格以低優先重新渲染。 |
-| `useTransition` | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 切換時間區間時保留既有走勢圖(不觸發 Suspense fallback),並呈現 pending 狀態。 |
-| `useSyncExternalStore` | [store/watchlistStore.ts](src/store/watchlistStore.ts) | 將 React 訂閱至 `localStorage` 外部 store;以單檔布林快照達成細粒度重新渲染。 |
-| `useId` | [components/PriceChart.tsx](src/components/PriceChart.tsx) | 為走勢圖 SVG 漸層產生跨實例不衝突的唯一 id。 |
-| `ref` 當一般 prop | [components/SearchBar.tsx](src/components/SearchBar.tsx) | 按 `/` 聚焦搜尋框——`ref` 以一般 prop 傳遞,無須 `forwardRef`。 |
-| Document Metadata | [routes/StockDetail.tsx](src/routes/StockDetail.tsx) | 於元件內渲染 `<title>`,自動提升至 `<head>`。 |
-| `React.memo` + `content-visibility` | [components/KpiCard.tsx](src/components/KpiCard.tsx) | 大型網格的渲染效能最佳化。 |
+| 模式                                              | 位置                                                                 | 作用                                                                         |
+| ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `useSuspenseQuery` + `Suspense` + `ErrorBoundary` | [hooks/useQuotes.ts](src/hooks/useQuotes.ts)、[App.tsx](src/App.tsx) | Suspense 資料載入;重試機制以 `useQueryErrorResetBoundary` 串接。             |
+| `useDeferredValue`                                | [routes/Dashboard.tsx](src/routes/Dashboard.tsx)                     | 維持輸入即時回應,同時過濾無限滾動累積的上百張卡片;網格會變淡,直到延遲渲染追上。                        |
+| `useTransition`                                   | [routes/StockDetail.tsx](src/routes/StockDetail.tsx)                 | 切換時間區間時保留既有走勢圖(不觸發 Suspense fallback),並呈現 pending 狀態。 |
+| `useSyncExternalStore`                            | [store/watchlistStore.ts](src/store/watchlistStore.ts)               | 將 React 訂閱至 `localStorage` 外部 store;以單檔布林快照達成細粒度重新渲染。 |
+| `useId`                                           | [components/PriceChart.tsx](src/components/PriceChart.tsx)           | 為走勢圖 SVG 漸層產生跨實例不衝突的唯一 id。                                 |
+| `ref` 當一般 prop                                 | [components/SearchBar.tsx](src/components/SearchBar.tsx)             | 按 `/` 聚焦搜尋框——`ref` 以一般 prop 傳遞,無須 `forwardRef`。                |
+| Document Metadata                                 | [routes/StockDetail.tsx](src/routes/StockDetail.tsx)                 | 於元件內渲染 `<title>`,自動提升至 `<head>`。                                 |
+| `React.memo` + `content-visibility`               | [components/KpiCard.tsx](src/components/KpiCard.tsx)                 | 大型網格的渲染效能最佳化。                                                   |
 
 ## 系統架構
 

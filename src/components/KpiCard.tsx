@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import { formatCurrency, formatPercent } from "../lib/format";
 import { Sparkline } from "./Sparkline";
 import { WatchButton } from "./WatchButton";
@@ -20,9 +21,12 @@ export const KpiCard = memo(function KpiCard({
   const { i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? "en";
   const up = quote.change >= 0;
+  const [cardRef, inView] = useIntersectionObserver<HTMLElement>({
+    rootMargin: "200px",
+  });
 
   return (
-    <article className="kpi-card">
+    <article className="kpi-card" ref={cardRef}>
       <WatchButton symbol={quote.symbol} />
       <Link className="kpi-card-body" to={`/stock/${quote.symbol}`}>
         <strong className="kpi-symbol">{quote.symbol}</strong>
@@ -35,7 +39,11 @@ export const KpiCard = memo(function KpiCard({
           {up ? "▲" : "▼"} {formatCurrency(quote.change, locale)} (
           {formatPercent(quote.changePercent, locale)})
         </div>
-        <Sparkline data={spark} up={up} />
+        {inView ? (
+          <Sparkline data={spark} up={up} />
+        ) : (
+          <div className="sparkline-placeholder" />
+        )}
       </Link>
     </article>
   );
